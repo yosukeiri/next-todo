@@ -4,12 +4,16 @@ import { Box, Center, Button, Input } from "@chakra-ui/react";
 const FormArea = (props: any) => {
   const [emailValue, setEmailValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
+
+  //フォーム入力に応じて入力内容をemailValueにセットする
   const onChangeEmail = (e: any) => {
     setEmailValue(e.target.value);
   };
+  //フォーム入力に応じて入力内容をpassworValueにセットする
   const onChangePassword = (e: any) => {
     setPasswordValue(e.target.value);
   };
+  //emailValue,passwordValueを親コンポーネントに渡す
   useEffect(() => {
     props.setEmail(emailValue);
     props.setPassword(passwordValue);
@@ -28,6 +32,7 @@ const FormArea = (props: any) => {
               py={3}
               onChange={onChangeEmail}
               value={emailValue}
+              placeholder="test@test.jp"
             />
           </dd>
         </dl>
@@ -43,6 +48,7 @@ const FormArea = (props: any) => {
               py={3}
               onChange={onChangePassword}
               value={passwordValue}
+              placeholder="6文字以上の英数字で入力してください"
             />
           </dd>
         </dl>
