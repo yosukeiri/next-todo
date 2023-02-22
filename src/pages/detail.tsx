@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Box, Flex, Button, Heading, Text, Spacer } from "@chakra-ui/react";
 import Link from "next/link";
@@ -7,22 +7,34 @@ import { db } from "../firebase";
 import { doc, deleteDoc } from "firebase/firestore";
 import Layout from "../components/Layout";
 
+type DetailTodo = {
+  id: string;
+  title: string;
+  status: string;
+  content: string;
+};
+
 const Detail = () => {
   const { userInfo } = useContext(UserContext);
+  const [todoDetail, setTodoDetail] = useState<DetailTodo>({
+    id: "",
+    title: "",
+    status: "",
+    content: "",
+  });
   const router = useRouter();
-  const todo = router.query;
 
   useEffect(() => {
     if (!userInfo) {
       router.push("/login");
     }
-    console.log(todo);
-  }, []);
+    setTodoDetail(router.query as DetailTodo);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, router.query, userInfo]);
 
   const deleteTodo = async () => {
-    await deleteDoc(doc(db, "todos", todo.id));
+    await deleteDoc(doc(db, "todos", todoDetail.id));
   };
-
   return (
     <Layout title="タスクの詳細">
       <Box bg="gray.100" p={10} mb={10}>
@@ -30,25 +42,25 @@ const Detail = () => {
           <Heading as="h3" fontSize={20} mb={5}>
             タスクID
           </Heading>
-          <Text>{todo.id}</Text>
+          <Text>{todoDetail.id}</Text>
         </Box>
         <Box mb={10}>
           <Heading as="h3" fontSize={20} mb={5}>
             タスク名
           </Heading>
-          <Text>{todo.title}</Text>
+          <Text>{todoDetail.title}</Text>
         </Box>
         <Box mb={10}>
           <Heading as="h3" fontSize={20} mb={5}>
             ステータス
           </Heading>
-          <Text>{todo.status}</Text>
+          <Text>{todoDetail.status}</Text>
         </Box>
         <Box>
           <Heading as="h3" fontSize={20} mb={5}>
             タスク内容
           </Heading>
-          <Text>{todo.content}</Text>
+          <Text>{todoDetail.content}</Text>
         </Box>
       </Box>
       <Flex justify="center">
@@ -71,8 +83,8 @@ const Detail = () => {
         </Link>
         <Spacer />
         <Link
-          as={`/editor/${todo.id}`}
-          href={{ pathname: `/editor`, query: todo }}
+          as={`/editor/${todoDetail.id}`}
+          href={{ pathname: `/editor`, query: todoDetail }}
         >
           <Button as="a" bg={"#28ADCA"} rounded={10} color="#fff">
             編集

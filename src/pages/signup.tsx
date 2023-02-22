@@ -15,16 +15,16 @@ const Signup = () => {
 
   //最初に開いた時にuserInfoがあるときはトップに遷移させる
   useEffect(() => {
-    if (userInfo) {
+    if (userInfo.id) {
       router.push("/");
     }
-  }, []);
+  }, [userInfo]);
   const onClickSignUp = async () => {
     try {
       //firebase宛にemail、passwordを送り、新規ユーザー登録をする。
-      await createUserWithEmailAndPassword(auth, email, password);
+      const user = await createUserWithEmailAndPassword(auth, email, password);
       //Context宛にemail、passwordを送り、ユーザー情報を保管する。
-      setUserInfo({ email: email, password: password });
+      setUserInfo({ id: user.user.uid });
       //サインアップ画面からTODO一覧に自動遷移させる
       router.push("/");
     } catch (e) {

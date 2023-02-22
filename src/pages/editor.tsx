@@ -23,16 +23,18 @@ const statusList = [
   { value: "Completed", label: "Completed" },
 ];
 
-type Todo = {
-  todoTitle: string;
-  todoStatus: string;
-  todoContent: string;
+type EditTodo = {
+  id: string;
+  title: string;
+  status: string;
+  content: string;
 };
 
 const Editor = () => {
   const { userInfo } = useContext(UserContext);
   const router = useRouter();
   const todo = router.query;
+  const [id, setId] = useState("");
   const [title, setTitle] = useState(todo.title);
   const [status, setStatus] = useState(todo.status);
   const [content, setContent] = useState(todo.content);
@@ -41,7 +43,13 @@ const Editor = () => {
     if (!userInfo) {
       router.push("/login");
     }
-  }, []);
+    const todo = router.query as EditTodo;
+    setId(todo.id);
+    setTitle(todo.title);
+    setStatus(todo.status);
+    setContent(todo.content);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, router.query, userInfo]);
 
   const onChangeTitle = (e: any) => {
     setTitle(e.target.value);
@@ -54,7 +62,7 @@ const Editor = () => {
     setStatus(e.target.value);
   };
   const onClickEdit = async () => {
-    const todoDocumentRef = doc(db, "todos", todo.id);
+    const todoDocumentRef = doc(db, "todos", id);
     await updateDoc(todoDocumentRef, {
       todoTitle: title,
       todoStatus: status,

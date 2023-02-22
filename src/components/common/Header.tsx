@@ -4,14 +4,18 @@ import Link from "next/link";
 import { Flex, Button, Spacer, Text, Box } from "@chakra-ui/react";
 
 const Header = () => {
-  const { userInfo } = useContext(UserContext);
+  const { userInfo, setUserInfo } = useContext(UserContext);
+
+  const logout = () => {
+    setUserInfo({ id: "" });
+  };
 
   return (
     <header>
       <Flex p={10} bg="#eee">
         <Text fontSize="2xl">TODO</Text>
         <Spacer />
-        {userInfo ? (
+        {userInfo.id ? (
           <Flex align="center">
             <Box mr={5}>
               <Link href="/">タスク一覧</Link>
@@ -20,7 +24,7 @@ const Header = () => {
               <Link href="/create">タスク作成</Link>
             </Box>
 
-            <Button bg="#141414" color="#fff">
+            <Button bg="#141414" color="#fff" onClick={logout}>
               ログアウト
             </Button>
           </Flex>

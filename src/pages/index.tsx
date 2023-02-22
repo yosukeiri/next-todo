@@ -8,7 +8,6 @@ import styles from "../styles/Home.module.scss";
 import { UserContext } from "../providers/userProvider";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
-import Link from "next/link";
 import TodoItem from "../components/molecules/TodoItem";
 
 const statusList = [
@@ -29,7 +28,7 @@ export default function Home() {
   const { userInfo } = useContext(UserContext);
   const router = useRouter();
   useEffect(() => {
-    if (!userInfo) {
+    if (!userInfo.id) {
       router.push("/login");
     } else {
       const todosCollectionRef = collection(db, "todos");
@@ -40,10 +39,10 @@ export default function Home() {
           id: doc.id,
         }));
         setTodosData(data);
-        setTodos(data.filter((todo: any) => todo.todoUser === userInfo.email));
+        setTodos(data.filter((todo: any) => todo.todoUser === userInfo.id));
       });
     }
-  }, []);
+  }, [userInfo]);
   useEffect(() => {
     const todosCollectionRef = collection(db, "todos");
     getDocs(todosCollectionRef).then((querySnapshot) => {
@@ -53,61 +52,43 @@ export default function Home() {
         id: doc.id,
       }));
       setTodosData(data);
-      setTodos(data.filter((todo: any) => todo.todoUser === userInfo.email));
+      setTodos(data.filter((todo: any) => todo.todoUser === userInfo.id));
     });
   }, [deleteTodo]);
   const onChangeStatusFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === "all") {
-      setTodos(
-        todosData.filter((todo: any) => todo.todoUser === userInfo.email)
-      );
+      setTodos(todosData.filter((todo: any) => todo.todoUser === userInfo.id));
     } else {
       setTodos(
         todosData.filter((todo: any) => {
           return (
-            todo.todoUser === userInfo.email &&
-            todo.todoStatus === e.target.value
+            todo.todoUser === userInfo.id && todo.todoStatus === e.target.value
           );
         })
       );
     }
   };
   const onChangeSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
     if (e.target.value === "todoId") {
-      console.log("go todoId");
-      const newTodo = todos.sort((a: any, b: any) => {
+      const sortId = todos.sort((a: any, b: any) => {
         if (a.todoId > b.todoId) return 1;
         if (a.todoId < b.todoId) return -1;
       });
-      console.log(newTodo);
-      setTodos(
-        todos.sort((a: any, b: any) => {
-          if (a.todoId > b.todoId) return 1;
-          if (a.todoId < b.todoId) return -1;
-        })
-      );
+      setTodos(sortId);
     }
     if (e.target.value === "todoTitle") {
-      const newTodo = todos.sort((a: any, b: any) => {
+      const sortTitle = todos.sort((a: any, b: any) => {
         if (a.todoTitle > b.todoTitle) return 1;
         if (a.todoTitle < b.todoTitle) return -1;
       });
-      console.log(newTodo);
-      setTodos(
-        todos.sort((a: any, b: any) => {
-          if (a.todoTitle > b.todoTitle) return 1;
-          if (a.todoTitle < b.todoTitle) return -1;
-        })
-      );
+      setTodos(sortTitle);
     }
     if (e.target.value === "todoStatus") {
-      setTodos(
-        todos.sort((a: any, b: any) => {
-          if (a.todoStatus > b.todoStatus) return 1;
-          if (a.todoStauts < b.todoStatus) return -1;
-        })
-      );
+      const sortStatus = todos.sort((a: any, b: any) => {
+        if (a.todoStatus > b.todoStatus) return 1;
+        if (a.todoStauts < b.todoStatus) return -1;
+      });
+      setTodos(sortStatus);
     }
   };
   return (

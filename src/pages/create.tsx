@@ -13,14 +13,14 @@ const Create = () => {
   const [content, setContent] = useState("");
 
   useEffect(() => {
-    if (!userInfo) {
+    if (!userInfo.id) {
       router.push("/login");
     }
-  }, []);
+  }, [userInfo]);
   const createTodo = async () => {
     const collectionRef = collection(db, "todos");
     const data = {
-      todoUser: userInfo.email,
+      todoUser: userInfo.id,
       todoTitle: title,
       todoContent: content,
       todoStatus: "Waiting",
