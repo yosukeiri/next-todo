@@ -70,28 +70,31 @@ export default function Home() {
   };
   const onChangeSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === "todoId") {
-      setTodos(
-        todos.sort((a: any, b: any) => {
-          if (a.todoId > b.todoId) return 1;
-          if (a.todoId < b.todoId) return -1;
-        })
-      );
+      const copyTodos = [...todos];
+      copyTodos.sort((a: any, b: any) => {
+        if (a.id > b.id) return 1;
+        if (a.id < b.id) return -1;
+        return 0;
+      });
+      setTodos(copyTodos);
     }
     if (e.target.value === "todoTitle") {
-      setTodos(
-        todos.sort((a: any, b: any) => {
-          if (a.todoTitle > b.todoTitle) return 1;
-          if (a.todoTitle < b.todoTitle) return -1;
-        })
-      );
+      const copyTodos = [...todos];
+      copyTodos.sort((a: any, b: any) => {
+        if (a.todoTitle > b.todoTitle) return 1;
+        if (a.todoTitle < b.todoTitle) return -1;
+        return 0;
+      });
+      setTodos(copyTodos);
     }
     if (e.target.value === "todoStatus") {
-      setTodos(
-        todos.sort((a: any, b: any) => {
-          if (a.todoStatus > b.todoStatus) return 1;
-          if (a.todoStauts < b.todoStatus) return -1;
-        })
-      );
+      const copyTodos = [...todos];
+      copyTodos.sort((a: any, b: any) => {
+        if (a.todoStatus > b.todoStatus) return 1;
+        if (a.todoStatus < b.todoStatus) return -1;
+        return 0;
+      });
+      setTodos(copyTodos);
     }
   };
   return (
